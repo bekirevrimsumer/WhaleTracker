@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: whaletracker-db
+    environment:
+      - POSTGRES_USER=whaletracker
+      - POSTGRES_PASSWORD=your_strong_password
+      - POSTGRES_DB=whaletracker_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - whaletracker-network
+
+networks:
+  whaletracker-network:
+    driver: bridge
+
+volumes:
+  postgres_data: 
