@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Wallet, CreateWalletDto, UpdateWalletDto } from '../types/models';
 
-const API_URL = 'https://localhost:44338/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5036/api';
 
 export const walletService = {
     getAllWallets: async (): Promise<Wallet[]> => {
@@ -25,5 +25,12 @@ export const walletService = {
 
     deleteWallet: async (id: string): Promise<void> => {
         await axios.delete(`${API_URL}/wallets/${id}`);
+    },
+
+    updateTokensManually: async (walletAddress: string, tokenData: string): Promise<void> => {
+        await axios.post(`${API_URL}/wallets/${walletAddress}/manual-update`, {
+            walletAddress,
+            tokenData
+        });
     }
 }; 

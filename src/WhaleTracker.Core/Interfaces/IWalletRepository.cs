@@ -13,5 +13,7 @@ namespace WhaleTracker.Core.Interfaces
         Task<Token?> GetTokenByAddressAsync(string tokenAddress, Guid walletId);
         Task<Token> AddTokenAsync(Token token);
         Task UpdateTokenAsync(Token token);
+        Task<IEnumerable<Token>> GetTokensByWalletIdAsync(Guid walletId);
+        Task DeleteTokenAsync(Token token);
     }
 } 

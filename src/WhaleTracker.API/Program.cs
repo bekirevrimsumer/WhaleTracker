@@ -4,7 +4,6 @@ using WhaleTracker.Core.Interfaces;
 using WhaleTracker.Infrastructure.Services;
 using WhaleTracker.Infrastructure.Repositories;
 using WhaleTracker.API.Hubs;
-using WhaleTracker.Infrastructure.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,21 +19,16 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder
-                .WithOrigins("http://localhost:3000")
+                .SetIsOriginAllowed(_ => true)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .AllowCredentials(); // SignalR için gerekli
+                .AllowCredentials();
         });
 });
 
 // Database Configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Solscan Service Registration
-builder.Services.AddHttpClient<ISolscanService, SolscanService>();
-
-builder.Services.AddHostedService<WalletMonitoringService>();
 
 // Repository Registration
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
@@ -54,7 +48,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// CORS middleware'ini UseRouting'den önce ekleyin
 app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();

@@ -8,7 +8,8 @@ import {
     TableRow,
     Paper,
     Avatar,
-    Box
+    Box,
+    Button
 } from '@mui/material';
 import { Token } from '../../types/models';
 
@@ -17,6 +18,11 @@ interface TokenListProps {
 }
 
 const TokenList: React.FC<TokenListProps> = ({ tokens }) => {
+
+    const copyToClipboard = (tokenAddress: string) => {
+        navigator.clipboard.writeText(tokenAddress);
+    };
+
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -51,10 +57,15 @@ const TokenList: React.FC<TokenListProps> = ({ tokens }) => {
                                     {token.balance?.toLocaleString()}
                                 </TableCell>
                                 <TableCell align="right">
-                                    ${token.price?.toFixed(2)}
+                                    ${token.price?.toFixed(8)}
                                 </TableCell>
                                 <TableCell align="right">
-                                    ${value?.toFixed(2)}
+                                    ${value?.toFixed(8)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button variant="contained" color="primary" onClick={() => copyToClipboard(token.tokenAddress)}>
+                                        Copy
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         );

@@ -80,5 +80,21 @@ namespace WhaleTracker.Infrastructure.Repositories
             _context.Entry(token).State = EntityState.Modified;
             return _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Token>> GetTokensByWalletIdAsync(Guid walletId)
+        {
+            return await _context.Tokens
+                .Where(t => t.WalletId == walletId)
+                .ToListAsync();
+        }
+
+        public async Task DeleteTokenAsync(Token token)
+        {
+            if (token != null)
+            {
+                _context.Tokens.Remove(token);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 } 

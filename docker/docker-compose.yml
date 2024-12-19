@@ -3,21 +3,41 @@ version: '3.8'
 services:
   postgres:
     image: postgres:latest
-    container_name: whaletracker-db
+    container_name: whaletracker-postgres
     environment:
-      - POSTGRES_USER=whaletracker
-      - POSTGRES_PASSWORD=your_strong_password
-      - POSTGRES_DB=whaletracker_db
+      POSTGRES_DB: whaletracker_db
+      POSTGRES_USER: whaletracker
+      POSTGRES_PASSWORD: your_strong_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - whaletracker-network
 
-networks:
-  whaletracker-network:
-    driver: bridge
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend.Dockerfile
+    container_name: whaletracker-backend
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=whaletracker_db;Username=whaletracker;Password=your_strong_password
+    ports:
+      - "5036:80"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
+    container_name: whaletracker-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../src/whaletracker_frontend:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:5036/api
 
 volumes:
-  postgres_data: 
+  postgres_data:

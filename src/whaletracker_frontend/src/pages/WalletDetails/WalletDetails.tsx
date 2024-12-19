@@ -5,6 +5,7 @@ import { Wallet } from '../../types/models';
 import { walletService } from '../../services/walletService';
 import { signalRService } from '../../services/signalRService';
 import TokenList from '../../components/TokenList/TokenList';
+import { ManualUpdate } from './ManualUpdate';
 
 export const WalletDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -13,12 +14,12 @@ export const WalletDetails: React.FC = () => {
     useEffect(() => {
         if (id) {
             loadWallet();
-            signalRService.subscribeToWallet(id, handleTokenAdded);
+            //signalRService.subscribeToWallet(id, handleTokenAdded);
         }
 
         return () => {
             if (id) {
-                signalRService.unsubscribeFromWallet(id);
+                //signalRService.unsubscribeFromWallet(id);
             }
         };
     }, [id]);
@@ -51,6 +52,11 @@ export const WalletDetails: React.FC = () => {
                 <Typography variant="h6">{wallet.name || 'Unnamed Wallet'}</Typography>
                 <Typography color="textSecondary">{wallet.address}</Typography>
             </Paper>
+
+            <ManualUpdate 
+                walletAddress={wallet.address} 
+                onUpdateComplete={loadWallet} 
+            />
 
             <TokenList tokens={wallet.tokens} />
         </div>

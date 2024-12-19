@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import { signalRService } from './services/signalRService';
 
-signalRService.startConnection();
+//signalRService.startConnection();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

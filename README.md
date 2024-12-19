@@ -1,14 +1,15 @@
 # WhaleTracker - Solana Wallet Token Tracker
 
-WhaleTracker, Solana cüzdanlarındaki token hareketlerini takip eden ve analiz eden bir uygulamadır. Belirtilen cüzdanların tuttukları coin'leri, yeni token hareketlerini belirli aralıklarla kontrol eder. Bu hareketleri kaydeder ve kullanıcıya bildirim gönderir.
+WhaleTracker, Solana cüzdanlarındaki token'ları takip eden ve analiz eden bir web uygulamasıdır. Kullanıcılar Solana cüzdanlarını ekleyebilir ve bu cüzdanlardaki token'ları manuel olarak güncelleyebilirler.
 
 ## Özellikler
 
-- Solana cüzdanlarını ekleme ve takip etme
-- Token bilgilerini otomatik güncelleme
-- Gerçek zamanlı bildirimler (SignalR ile)
+- Solana cüzdanlarını ekleme ve yönetme
+- Token bilgilerini manuel olarak güncelleme
 - Token değerlerini USD cinsinden görüntüleme
 - Cüzdan bazında toplam değer hesaplama
+- Token adreslerini kopyalama
+- Gerçek zamanlı bildirimler (SignalR ile)
 
 ## Teknolojiler
 
@@ -18,67 +19,94 @@ WhaleTracker, Solana cüzdanlarındaki token hareketlerini takip eden ve analiz 
 - Entity Framework Core
 - PostgreSQL
 - SignalR
-- Solscan Pro API
 
 ### Frontend
-- React
+- React 19
 - TypeScript
-- Material-UI
+- Material-UI v6
 - Axios
-- React Router
+- React Router v7
+
+### Deployment
+- Docker
+- Docker Compose
 
 ## Kurulum
 
 ### Ön Gereksinimler
-- .NET 8 SDK
-- Node.js ve npm
-- PostgreSQL
-- Docker (opsiyonel)
+- Docker Desktop
+- Git
 
-### Backend Kurulumu
+### Hızlı Başlangıç
 
-1. PostgreSQL veritabanını başlatın:
+1. Projeyi klonlayın:
 ```bash
-cd docker
-docker-compose up -d
+git clone https://github.com/yourusername/whaletracker.git
+cd whaletracker
 ```
 
-2. Veritabanı migration'larını uygulayın:
+2. Uygulamayı başlatın:
+Windows için:
+```bash
+start.bat
+```
+
+Linux/Mac için:
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+Uygulama aşağıdaki adreslerde çalışacaktır:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5036
+- Swagger UI: http://localhost:5036/swagger
+- PostgreSQL: localhost:5432
+
+### Manuel Kurulum
+
+Eğer Docker kullanmak istemiyorsanız:
+
+1. PostgreSQL veritabanını kurun ve bir veritabanı oluşturun
+2. Backend için connection string'i güncelleyin:
+   - `src/WhaleTracker.API/appsettings.json`
+   - `src/WhaleTracker.Infrastructure/appsettings.json`
+
+3. Backend'i başlatın:
 ```bash
 cd src/WhaleTracker.API
 dotnet ef database update
-```
-
-3. API'yi başlatın:
-```bash
 dotnet run
 ```
 
-API uygulamasının çalıştığı portu frontend'de güncelleyin. Şu anki port 5036.
-
-### Frontend Kurulumu
-
-1. Gerekli paketleri yükleyin:
+4. Frontend'i başlatın:
 ```bash
 cd src/whaletracker_frontend
 npm install
-```
-
-2. Frontend uygulamasını başlatın:
-```bash
 npm start
 ```
 
-Frontend uygulaması http://localhost:3000 adresinde çalışacaktır.
+## Kullanım
 
-### Solscan API Ayarları
-
-1. [Solscan Pro](https://pro-api.solscan.io/pro-api-docs/v2.0) üzerinden bir API anahtarı alın
-2. API anahtarını `src/WhaleTracker.API/appsettings.json` dosyasına ekleyin:
+1. Ana sayfada "Add New Wallet" butonuna tıklayın
+2. Solana cüzdan adresini ve opsiyonel olarak bir isim girin
+3. Cüzdan detay sayfasında "Manual Token Update" bölümünden token verilerini güncelleyin. Verileri solscan'dan alıyoruz (Inspect > Network > Burada https://api-v2.solscan.io/v2/account/tokens?address= adresini aratıp bu istekte dönen json'u kopyalayıp buraya yapıştırıyoruz)
+4. Token verilerini JSON formatında girin:
 ```json
 {
-  "SolscanApi": {
-    "ApiKey": "your_api_key_here"
+  "success": true,
+  "data": {
+    "data_type": "onchain",
+    "tokens": [
+      {
+        "tokenAddress": "...",
+        "tokenName": "...",
+        "tokenSymbol": "...",
+        "balance": 100,
+        "priceUsdt": 1.5,
+        "tokenIcon": "..."
+      }
+    ]
   }
 }
 ```
