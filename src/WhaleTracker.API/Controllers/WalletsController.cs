@@ -168,7 +168,7 @@ namespace WhaleTracker.API.Controllers
                     {
                         var total = tokenInfo.Balance * (tokenInfo.PriceUsdt.HasValue ? (decimal)tokenInfo.PriceUsdt : (decimal)0.0);
 
-                        if (total > 1) continue;
+                        if (total < 1) continue;
 
                         var newToken = new Token
                         {
@@ -186,7 +186,7 @@ namespace WhaleTracker.API.Controllers
                     {
                         var total = existingToken.Balance * (tokenInfo.PriceUsdt.HasValue ? (decimal)tokenInfo.PriceUsdt : (decimal)0.0);
 
-                        if (total > 1)
+                        if (total < 1)
                         {
                             await _walletRepository.DeleteTokenAsync(existingToken);
                             continue;
